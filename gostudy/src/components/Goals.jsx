@@ -1,11 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Draggable from "react-draggable";
 import { FaRegWindowClose } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import TodoItem from "./TodoItem";
 
-const Goals = ({ setPopUp }) => {
+const Goals = ({ setPopUp, goals, addGoal, toggleComplete }) => {
+    const [newGoal, setNewGoal] = useState("");
     const nodeRef = useRef(null);
+
+    const handleAddGoal = () => {
+        if (newGoal.trim() !== "") {
+            addGoal({ description: newGoal, completed: false });
+            setNewGoal("");
+        }
+    };
 
     return (
         <Draggable nodeRef={nodeRef}>
@@ -22,18 +30,28 @@ const Goals = ({ setPopUp }) => {
                         <FaRegWindowClose size={24} color="white" />
                     </div>
                 </div>
-                <div className="flex-grow p-4">
-                    {/* Content or existing goals can go here */}
+                <div className="flex-grow p-4 overflow-y-auto">
+                    {goals.map((goal, index) => (
+                        <TodoItem
+                            key={index}
+                            goal={goal}
+                            toggleComplete={() => toggleComplete(index)}
+                        />
+                    ))}
                 </div>
-                {/* Add a new goal input */}
                 <div className="flex flex-row justify-center items-center mt-auto p-4">
                     <input
                         className="border-2 rounded-lg p-3 flex border-gray-300 w-full"
                         type="text"
                         name="addGoal"
                         placeholder="Add a new todo item..."
+                        value={newGoal}
+                        onChange={(e) => setNewGoal(e.target.value)}
                     />
-                    <div className="bg-buttons w-10 h-10 flex justify-center items-center rounded-lg ml-2">
+                    <div
+                        className="bg-buttons w-10 h-10 flex justify-center items-center rounded-lg ml-2 cursor-pointer"
+                        onClick={handleAddGoal}
+                    >
                         <IoAddCircleOutline size={30} color="white" />
                     </div>
                 </div>

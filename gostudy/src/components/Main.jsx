@@ -1,22 +1,40 @@
-import { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { MdLibraryAdd } from "react-icons/md";
 import Goals from "./Goals";
 
 const Main = () => {
     const [addNewGoal, setGoalPage] = useState(false);
+    const [goals, setGoals] = useState([]); // Store goals here
+
     const handleAddGoal = () => {
         setGoalPage(!addNewGoal);
     };
-    function closePopUp(){
+
+    const closePopUp = () => {
         setGoalPage(false);
+    };
+
+    const addGoal = (goal) => {
+        setGoals([...goals, goal]);
+    };
+
+    const toggleComplete = (index) => {
+        const updatedGoals = goals.map((goal, i) =>
+            i === index ? { ...goal, completed: !goal.completed } : goal
+        );
+        setGoals(updatedGoals);
     };
 
     return (
         <div id="main" className="relative">
             {addNewGoal && (
                 <div className="fixed inset-0 flex justify-center items-center z-50">
-                    <Goals setPopUp={closePopUp} />
+                    <Goals
+                        setPopUp={closePopUp}
+                        goals={goals}
+                        addGoal={addGoal}
+                        toggleComplete={toggleComplete}
+                    />
                 </div>
             )}
 

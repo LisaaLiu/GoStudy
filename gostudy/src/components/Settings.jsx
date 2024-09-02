@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 import { AiOutlineSound } from "react-icons/ai";
 import { MdOutlineTimer } from "react-icons/md";
@@ -9,6 +9,9 @@ const Settings = () => {
     const [openSettings, setOpenSettings] = useState(false);
     const [sounds, setSounds] = useState(false);
     const [timer, setTimer] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState(1500); // Default to 25 minutes
+    const [isRunning, setIsRunning] = useState(false);
+    const [isReset, setReset] = useState(true);
 
     const handleOpenSettings = () => {
         setOpenSettings(!openSettings);
@@ -20,27 +23,50 @@ const Settings = () => {
 
     function handleTimer() {
         setTimer(!timer);
-    };
+    }
 
+    useEffect(() => {
+        let interval = null;
+        if (isRunning && timeRemaining > 0) {
+            interval = setInterval(() => {
+                setTimeRemaining((prevTime) => prevTime - 1);
+            }, 1000);
+        } else if (timeRemaining <= 0) {
+            clearInterval(interval);
+            setIsRunning(false);
+            setTimeRemaining(0);
+        }
+        return () => clearInterval(interval);
+    }, [isRunning, timeRemaining]);
+
+    const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
 
     return (
         <div>
             <div className="flex justify-end items-center pt-4 pr-4 space-x-5 z-[70] fixed top-0 right-0">
-                <div className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
+                <div
+                    className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
                     onClick={handleSounds}
                 >
                     <AiOutlineSound size={30} color="white" />
                 </div>
-                <div className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
-                    onClick={
-                        handleTimer
-                    }
+                <div
+                    className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
+                    onClick={handleTimer}
                 >
-                    <MdOutlineTimer size={30} color="white" />
+                    {isReset ? (
+                        <MdOutlineTimer size={30} color="white" />
+                    ) : (
+                        <span className="text-white text-xl">{formatTime(timeRemaining)}</span>
+                    )}
                 </div>
-                <div className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
-                    onClick={
-                        handleOpenSettings}
+                <div
+                    className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
+                    onClick={handleOpenSettings}
                 >
                     <IoSettingsSharp size={30} color="white" />
                 </div>
@@ -52,7 +78,15 @@ const Settings = () => {
             )}
             {timer && (
                 <div className="fixed w-full h-screen bg-black/40 flex flex-col justify-center items-center z-[99]" >
-                    <TimerMenu setMenu={setTimer} isOpen={timer}/>
+                    <TimerMenu 
+                        setMenu={setTimer} 
+                        isOpen={timer} 
+                        setTimeRemaining={setTimeRemaining} 
+                        timeRemaining={timeRemaining}
+                        isRunning={isRunning}
+                        setIsRunning={setIsRunning}
+                        setReset={setReset}
+                    />
                 </div>
             )}
         </div>
