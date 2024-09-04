@@ -4,6 +4,7 @@ import { AiOutlineSound } from "react-icons/ai";
 import { MdOutlineTimer } from "react-icons/md";
 import SettingsMenu from "./SettingsMenu";
 import TimerMenu from "./TimerMenu";
+import Waterbreak from "./waterbreaks";
 
 const Settings = () => {
     const [openSettings, setOpenSettings] = useState(false);
@@ -12,6 +13,10 @@ const Settings = () => {
     const [timeRemaining, setTimeRemaining] = useState(1500); // Default to 25 minutes
     const [isRunning, setIsRunning] = useState(false);
     const [isReset, setReset] = useState(true);
+
+    // Persisting settings values
+    const [waterBreaks, setWaterBreaks] = useState(false);
+    const [showWaterBreak, setShowWaterBreak] = useState(false);
 
     const handleOpenSettings = () => {
         setOpenSettings(!openSettings);
@@ -23,6 +28,9 @@ const Settings = () => {
 
     function handleTimer() {
         setTimer(!timer);
+    }
+    function closeWaterBreak(){
+        setShowWaterBreak(false);
     }
 
     useEffect(() => {
@@ -38,6 +46,17 @@ const Settings = () => {
         }
         return () => clearInterval(interval);
     }, [isRunning, timeRemaining]);
+
+    useEffect(() => {
+        if (waterBreaks) {
+            // Set up the interval for water breaks
+            const breakInterval = setInterval(() => {
+                setShowWaterBreak(true);
+            }, 3600000); // 1 hour in milliseconds
+
+            return () => clearInterval(breakInterval);
+        }
+    }, [waterBreaks]);
 
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
@@ -73,7 +92,13 @@ const Settings = () => {
             </div>
             {openSettings && (
                 <div className="fixed w-full h-screen bg-black/40 flex flex-col justify-center items-center z-[99]">
-                    <SettingsMenu setMenu={setOpenSettings} isOpen={openSettings}/>
+                    <SettingsMenu 
+                        setMenu={setOpenSettings} 
+                        isOpen={openSettings}
+                        waterBreaks={waterBreaks}
+                        setWaterBreaks={setWaterBreaks}
+        
+                    />
                 </div>
             )}
             {timer && (
@@ -87,6 +112,11 @@ const Settings = () => {
                         setIsRunning={setIsRunning}
                         setReset={setReset}
                     />
+                </div>
+            )}
+            {showWaterBreak && (
+                <div className="fixed w-full h-screen bg-black/40 flex flex-col justify-center items-center z-[99]">
+                    <Waterbreak onClose={closeWaterBreak}/>
                 </div>
             )}
         </div>

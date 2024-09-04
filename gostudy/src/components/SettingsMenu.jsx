@@ -1,32 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const SettingsMenu = ({setMenu, isOpen}) => {
-    const [waterBreaks, setWaterBreaks] = useState(false);
-    const [showSpotifyPlaylist, setShowSpotifyPlaylist] = useState(false);
-    const [showGoals, setGoals] = useState(false);
+const SettingsMenu = ({ setMenu, isOpen, waterBreaks, setWaterBreaks, showSpotifyPlaylist, setShowSpotifyPlaylist, showGoals, setShowGoals }) => {
 
     const handleWaterBreaks = () => {
         setWaterBreaks(!waterBreaks);
     };
 
-    const handleSpotifyPlaylist = () => {
-        setShowSpotifyPlaylist(!showSpotifyPlaylist);
-    };
-
-    const handleGoals = () =>{
-        setGoals(!showGoals);
-    }
-
-    function checkClickedOutsideSettings(e){
-        if(isOpen && !settingMenuRef.current.contains(e.target)){
+    function checkClickedOutsideSettings(e) {
+        if (isOpen && !settingMenuRef.current.contains(e.target)) {
             setMenu(false);
         }
     }
 
-    useEffect((e)=>{
+    useEffect(() => {
         document.addEventListener("mousedown", checkClickedOutsideSettings);
-    })
+        return () => document.removeEventListener("mousedown", checkClickedOutsideSettings);
+    }, [isOpen]);
 
     let settingMenuRef = useRef(null);
 
@@ -40,24 +30,6 @@ const SettingsMenu = ({setMenu, isOpen}) => {
                     onClick={handleWaterBreaks}
                 >
                     {waterBreaks && <AiOutlineCheck size={20} color="white" />}
-                </div>
-            </div>
-            <div className="flex items-center justify-between my-4">
-                <h3 className="sm:text-xl text-sd font-semibold">Show Spotify Playlist</h3>
-                <div
-                    className={`cursor-pointer w-7 h-7 rounded-full border-2 border-gray-300 flex items-center justify-center ${showSpotifyPlaylist ? "bg-buttons border-buttons" : ""}`}
-                    onClick={handleSpotifyPlaylist}
-                >
-                    {showSpotifyPlaylist && <AiOutlineCheck size={20} color="white" />}
-                </div>
-            </div>
-            <div className="flex items-center justify-between my-4">
-                <h3 className="sm:text-xl text-sd font-semibold">Show Goals</h3>
-                <div
-                    className={`cursor-pointer w-7 h-7 rounded-full border-2 border-gray-300 flex items-center justify-center ${showGoals ? "bg-buttons border-buttons" : ""}`}
-                    onClick={handleGoals}
-                >
-                    {showSpotifyPlaylist && <AiOutlineCheck size={20} color="white" />}
                 </div>
             </div>
         </div>

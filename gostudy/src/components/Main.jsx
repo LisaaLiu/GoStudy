@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MdLibraryAdd } from "react-icons/md";
 import Goals from "./Goals";
+import SpotifyPlayList from "./playlist";
 
 const Main = () => {
     const [addNewGoal, setGoalPage] = useState(false);
@@ -37,7 +38,7 @@ const Main = () => {
                     />
                 </div>
             )}
-
+    
             <div className="flex flex-col justify-center items-center h-screen bg-[#DABAA3]">
                 <div className="relative w-1/2 max-w-md">
                     <img className="w-full" src="/src/assets/girl-8602014_640.png" alt="" />
@@ -49,6 +50,10 @@ const Main = () => {
                 </div>
                 <p className="text-2xl text-semibold text-buttons p-4">Shouldn't you be studying?</p>
             </div>
+            
+            {/* Embed Spotify Playlist */}
+            <SpotifyPlayList/>
+
         </div>
     );
 };
