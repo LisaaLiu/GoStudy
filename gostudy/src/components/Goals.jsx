@@ -40,7 +40,7 @@ const Goals = ({ setPopUp, goals, addGoal, toggleComplete, deleteGoal }) => {
                 <div className="w-full bg-buttons h-1/6 flex justify-between items-center px-4 rounded-t-2xl">
                     <h2 className="text-2xl text-white">TODO:</h2>
                     <div
-                        className="rounded-full bg-[#DABAA3] p-3 cursor-pointer"
+                        className="rounded-full p-3 cursor-pointer"
                         onClick={() => setPopUp(false)}
                     >
                         <FaRegWindowClose size={24} color="white" />
