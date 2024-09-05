@@ -6,6 +6,7 @@ const TimerMenu = ({ setMenu, isOpen, setTimeRemaining, timeRemaining, isRunning
     const [minutes, setMinutes] = useState(Math.floor(timeRemaining / 60));
     const [seconds, setSeconds] = useState(timeRemaining % 60);
     const [isPaused, setPaused] = useState(false);
+    const alarmRef = useRef(null); // Ref for the alarm audio element
 
     const handleChange = (event) => {
         const newMinutes = event.target.value;
@@ -38,7 +39,22 @@ const TimerMenu = ({ setMenu, isOpen, setTimeRemaining, timeRemaining, isRunning
     useEffect(() => {
         setMinutes(Math.floor(timeRemaining / 60));
         setSeconds(timeRemaining % 60);
-    }, [timeRemaining]);
+
+        if (timeRemaining === 0 && isRunning) {
+            // Play the alarm sound
+            if (alarmRef.current) {
+                alarmRef.current.play();
+                // Stop the alarm after 2 seconds
+                setTimeout(() => {
+                    if (alarmRef.current) {
+                        alarmRef.current.pause();
+                        alarmRef.current.currentTime = 0; // Reset to the beginning
+                    }
+                }, 2000);
+            }
+            setIsRunning(false);
+        }
+    }, [timeRemaining, isRunning]);
 
     useEffect(() => {
         function checkClickedOutside(e) {
@@ -106,6 +122,10 @@ const TimerMenu = ({ setMenu, isOpen, setTimeRemaining, timeRemaining, isRunning
                     </button>
                 </div>
             )}
+            <audio ref={alarmRef}>
+                <source src="/src/assets/alarm.wav" type="audio/mpeg" />
+                Your browser does not support the audio element.
+            </audio>
         </div>
     );
 };

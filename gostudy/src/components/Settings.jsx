@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { IoSettingsSharp } from "react-icons/io5";
+import React, { useState, useEffect, useRef } from "react";
+import { IoSettingsSharp, IoVolumeMuteOutline } from "react-icons/io5";
 import { AiOutlineSound } from "react-icons/ai";
 import { MdOutlineTimer } from "react-icons/md";
 import SettingsMenu from "./SettingsMenu";
@@ -18,6 +18,8 @@ const Settings = () => {
     const [waterBreaks, setWaterBreaks] = useState(false);
     const [showWaterBreak, setShowWaterBreak] = useState(false);
 
+    const audioRef = useRef(null); // Ref for the audio element
+
     const handleOpenSettings = () => {
         setOpenSettings(!openSettings);
     };
@@ -29,7 +31,8 @@ const Settings = () => {
     function handleTimer() {
         setTimer(!timer);
     }
-    function closeWaterBreak(){
+
+    function closeWaterBreak() {
         setShowWaterBreak(false);
     }
 
@@ -58,6 +61,21 @@ const Settings = () => {
         }
     }, [waterBreaks]);
 
+    useEffect(() => {
+        if (sounds) {
+            // Play background music
+            if (audioRef.current) {
+                audioRef.current.play();
+            }
+        } else {
+            // Pause background music
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0; // Reset to the beginning
+            }
+        }
+    }, [sounds]);
+
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
@@ -66,18 +84,24 @@ const Settings = () => {
 
     return (
         <div>
+            <audio ref={audioRef} loop>
+                <source src="/src/assets/backgroundSound.mp3" type="audio/mpeg" />
+            </audio>
+            
             <div className="flex justify-end items-center pt-4 pr-4 space-x-5 z-[70] fixed top-0 right-0">
-                <div
-                    className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
-                    onClick={handleSounds}
-                >
+            <div className={`rounded-full shadow-lg ${sounds ? "bg-[#F8ECE3]" : "bg-buttons"} shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300`} onClick={handleSounds}>
+                {sounds ? (
+                    <IoVolumeMuteOutline size={30} color="buttons" />
+                ) : (
                     <AiOutlineSound size={30} color="white" />
-                </div>
+                )}
+            </div>
+
                 <div
                     className="rounded-full shadow-lg bg-buttons shadow-gray-400 p-4 cursor-pointer hover:scale-110 ease-in duration-300"
                     onClick={handleTimer}
                 >
-                    {isReset ? (
+                    {(isReset||!isRunning) ? (
                         <MdOutlineTimer size={30} color="white" />
                     ) : (
                         <span className="text-white text-xl">{formatTime(timeRemaining)}</span>
@@ -97,7 +121,6 @@ const Settings = () => {
                         isOpen={openSettings}
                         waterBreaks={waterBreaks}
                         setWaterBreaks={setWaterBreaks}
-        
                     />
                 </div>
             )}
