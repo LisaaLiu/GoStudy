@@ -26,6 +26,12 @@ const Main = () => {
         setGoals(updatedGoals);
     };
 
+    const deleteGoal = (index) => {
+        console.log(index)
+        const updatedGoals = goals.filter((_, i) => i !== index); // Remove goal by index
+        setGoals(updatedGoals);
+    };
+
     return (
         <div id="main" className="relative">
             {addNewGoal && (
@@ -35,10 +41,11 @@ const Main = () => {
                         goals={goals}
                         addGoal={addGoal}
                         toggleComplete={toggleComplete}
+                        deleteGoal={deleteGoal} // Pass deleteGoal function
                     />
                 </div>
             )}
-    
+
             <div className="flex flex-col justify-center items-center h-screen bg-[#DABAA3]">
                 <div className="relative w-1/2 max-w-md">
                     <img className="w-full" src="/src/assets/girl-8602014_640.png" alt="" />
@@ -50,10 +57,8 @@ const Main = () => {
                 </div>
                 <p className="text-2xl text-semibold text-buttons p-4">Shouldn't you be studying?</p>
             </div>
-            
             {/* Embed Spotify Playlist */}
-            <SpotifyPlayList/>
-
+            <SpotifyPlayList />
         </div>
     );
 };

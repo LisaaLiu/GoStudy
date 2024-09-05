@@ -4,14 +4,30 @@ import { FaRegWindowClose } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import TodoItem from "./TodoItem";
 
-const Goals = ({ setPopUp, goals, addGoal, toggleComplete }) => {
+const Goals = ({ setPopUp, goals, addGoal, toggleComplete, deleteGoal }) => {
     const [newGoal, setNewGoal] = useState("");
     const nodeRef = useRef(null);
 
     const handleAddGoal = () => {
         if (newGoal.trim() !== "") {
-            addGoal({ description: newGoal, completed: false });
+            const newGoalObj = {
+                id: goals.length, // Assign an index based on current length
+                description: newGoal,
+                completed: false,
+            };
+            addGoal(newGoalObj);
             setNewGoal("");
+        }
+    };
+
+    const handleDeleteGoal = (id) => {
+        deleteGoal(id);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent default behavior of Enter key
+            handleAddGoal();
         }
     };
 
@@ -31,11 +47,12 @@ const Goals = ({ setPopUp, goals, addGoal, toggleComplete }) => {
                     </div>
                 </div>
                 <div className="flex-grow p-4 overflow-y-auto">
-                    {goals.map((goal, index) => (
+                    {goals.map((goal) => (
                         <TodoItem
-                            key={index}
+                            key={goal.id}
                             goal={goal}
-                            toggleComplete={() => toggleComplete(index)}
+                            toggleComplete={() => toggleComplete(goal.id)}
+                            deleteGoal={() => handleDeleteGoal(goal.id)}
                         />
                     ))}
                 </div>
@@ -47,6 +64,7 @@ const Goals = ({ setPopUp, goals, addGoal, toggleComplete }) => {
                         placeholder="Add a new todo item..."
                         value={newGoal}
                         onChange={(e) => setNewGoal(e.target.value)}
+                        onKeyDown={handleKeyDown}
                     />
                     <div
                         className="bg-buttons w-10 h-10 flex justify-center items-center rounded-lg ml-2 cursor-pointer"

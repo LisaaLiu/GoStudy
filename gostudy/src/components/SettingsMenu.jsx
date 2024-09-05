@@ -21,7 +21,7 @@ const SettingsMenu = ({ setMenu, isOpen, waterBreaks, setWaterBreaks, showSpotif
     let settingMenuRef = useRef(null);
 
     return (
-        <div ref={settingMenuRef} className="flex flex-col justify-center bg-white rounded-xl shadow-lg shadow-gray-400 w-1/3 h-1/2 p-6">
+        <div ref={settingMenuRef} className="flex flex-col justify-center bg-white rounded-xl shadow-lg shadow-gray-400 w-1/3 h-1/4 p-6">
             <h1 className="py-4 sm:text-4xl text-2xl font-bold text-center text-buttons">Settings</h1>
             <div className="flex items-center justify-between my-4">
                 <h3 className="sm:text-xl text-md font-semibold">Water Breaks</h3>
